@@ -271,7 +271,7 @@ export default function RegistrationForm() {
               {isSubmitting ? 'PROCESSING...' : 'REGISTER NOW →'}
             </button>
             <div className="sys-footer">
-              SYSTEM READY | INITIATING PROXY (SECURITY: ENCRYPTED)
+                <p>© 2026 MLCOE. All Rights Reserved.</p>
             </div>
           </div>
 
