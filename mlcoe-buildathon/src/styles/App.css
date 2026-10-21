@@ -7,8 +7,8 @@
   --text-main: #e2f1f8;
   --text-muted: #8ab4f8;
   --error-color: #ff3366;
-  --font-display: 'Orbitron', sans-serif;
-  --font-body: 'Rajdhani', sans-serif;
+  --font-display: "Orbitron", sans-serif;
+  --font-body: "Rajdhani", sans-serif;
 }
 
 * {
@@ -32,17 +32,21 @@ body {
 }
 
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   z-index: -1;
-  background-image: 
+  background-image:
     radial-gradient(circle at top right, rgba(0, 30, 80, 0.8), transparent 50%),
-    radial-gradient(circle at bottom left, rgba(40, 0, 80, 0.8), transparent 50%),
-    url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop');
+    radial-gradient(
+      circle at bottom left,
+      rgba(40, 0, 80, 0.8),
+      transparent 50%
+    ),
+    url("https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -71,8 +75,9 @@ body::before {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-.cyber-navbar::before, .cyber-navbar::after {
-  content: '';
+.cyber-navbar::before,
+.cyber-navbar::after {
+  content: "";
   position: absolute;
   bottom: -1px;
   width: 50px;
@@ -80,8 +85,12 @@ body::before {
   background: var(--neon-cyan);
   box-shadow: 0 0 10px var(--neon-cyan);
 }
-.cyber-navbar::before { left: 3rem; }
-.cyber-navbar::after { right: 3rem; }
+.cyber-navbar::before {
+  left: 3rem;
+}
+.cyber-navbar::after {
+  right: 3rem;
+}
 
 .nav-left {
   display: flex;
@@ -89,17 +98,35 @@ body::before {
   flex: 0 0 auto;
 }
 
+/* Replace your existing .nav-title with this: */
 .nav-title {
+  display: block !important; /* Forces visibility, overriding any old hidden rules */
   font-family: var(--font-display);
-  font-size: clamp(0.72rem, 3.2vw, 1.25rem);
+  font-size: 1.25rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: 1px;
   text-shadow: 0 0 8px var(--neon-cyan);
   text-align: center;
-  flex: 1;
+  flex: 1 1 auto;
   margin: 0 0.5rem;
-  white-space: nowrap;
+  white-space: normal; /* Allows the title to stack into two lines on very narrow phones */
+  line-height: 1.2;
+}
+
+/* Add or ensure these rules are inside your media queries at the bottom of the file: */
+
+@media (max-width: 768px) {
+  .nav-title {
+    font-size: 1rem !important; /* Scales down smoothly for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-title {
+    font-size: 0.75rem !important; /* Scales down for narrow mobile screens */
+    letter-spacing: 0.5px !important;
+  }
 }
 
 .nav-right {
@@ -199,7 +226,9 @@ body::before {
   font-weight: 900;
   color: #fff;
   line-height: 1.1;
-  text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+  text-shadow:
+    0 0 10px var(--neon-cyan),
+    0 0 20px var(--neon-cyan);
   margin-bottom: 1rem;
 }
 
@@ -221,7 +250,7 @@ body::before {
 
 .domain-card {
   background: var(--glass-bg);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem 1.25rem;
   border-radius: 8px;
   margin-bottom: 0.75rem;
@@ -377,7 +406,8 @@ body::before {
     align-items: center;
     text-align: center;
   }
-  .domains-section, .event-details {
+  .domains-section,
+  .event-details {
     width: 100%;
     max-width: 500px;
   }
@@ -390,7 +420,8 @@ body::before {
   .cyber-navbar {
     padding: 0.85rem 1rem;
   }
-  .cyber-navbar::before, .cyber-navbar::after {
+  .cyber-navbar::before,
+  .cyber-navbar::after {
     display: none;
   }
   .title-glow {
