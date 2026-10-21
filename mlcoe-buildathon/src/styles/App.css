@@ -83,27 +83,30 @@ body::before {
 .cyber-navbar::before { left: 3rem; }
 .cyber-navbar::after { right: 3rem; }
 
-.nav-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 2px;
-  text-shadow: 0 0 8px var(--neon-cyan);
-  text-align: center;
-  flex: 1;
-}
-
 .nav-left {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
+}
+
+.nav-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 3.2vw, 1.25rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px var(--neon-cyan);
+  text-align: center;
   flex: 1;
+  margin: 0 0.5rem;
+  white-space: nowrap;
 }
 
 .nav-right {
   display: flex;
   justify-content: flex-end;
-  flex: 1;
+  align-items: center;
+  flex: 0 0 auto;
 }
 
 .nav-contact-btn {
@@ -116,7 +119,7 @@ body::before {
   color: #fff;
   text-decoration: none;
   letter-spacing: 2px;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.85rem;
   border: 1px solid transparent;
   transition: all 0.3s ease;
   white-space: nowrap;
@@ -127,6 +130,18 @@ body::before {
   background: var(--neon-cyan-dim);
   border-radius: 4px;
   text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.nav-contact-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px var(--neon-cyan));
+  transition: transform 0.2s ease;
+}
+
+.nav-contact-btn:hover .nav-contact-icon {
+  transform: scale(1.1);
 }
 
 /* --- LOGO STYLING --- */
@@ -229,9 +244,14 @@ body::before {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--neon-cyan);
-  font-size: 1.25rem;
   flex-shrink: 0;
+}
+
+.domain-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6));
 }
 
 .domain-text h6 {
@@ -256,16 +276,26 @@ body::before {
 
 .detail-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
   font-size: 1.1rem;
   font-weight: 600;
   color: #fff;
 }
 
-.detail-row span {
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--neon-cyan);
   font-family: var(--font-display);
+}
+
+.detail-img-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.5));
 }
 
 .form-panel-wrapper {
@@ -336,15 +366,10 @@ body::before {
   font-size: 1.5rem;
 }
 
-
-/* =========================================
-   RESPONSIVE DESIGN BREAKPOINTS 
-========================================= */
-
-/* Tablets / Small Laptops */
+/* --- RESPONSIVE BREAKPOINTS --- */
 @media (max-width: 1024px) {
   .main-layout {
-    flex-direction: column; /* Stacks Form under Info */
+    flex-direction: column;
     gap: 3rem;
     margin: 2rem auto;
   }
@@ -359,21 +384,14 @@ body::before {
   .detail-row {
     justify-content: center;
   }
-  .nav-title {
-    font-size: 1rem;
-  }
 }
 
-/* Large Mobile Devices */
 @media (max-width: 768px) {
   .cyber-navbar {
-    padding: 1rem 1.5rem;
-  }
-  .nav-title {
-    display: none; /* Hide center title on mobile to prevent overlapping */
+    padding: 0.85rem 1rem;
   }
   .cyber-navbar::before, .cyber-navbar::after {
-    display: none; /* Remove bottom lines to clean up mobile UI */
+    display: none;
   }
   .title-glow {
     font-size: 3rem;
@@ -389,72 +407,27 @@ body::before {
     gap: 1.25rem;
   }
   .contact-divider {
-    display: none; /* Removes the "||" divider when stacked vertically */
+    display: none;
   }
 }
 
-/* --- NEW IMAGE ICON STYLES --- */
-
-/* Replaces .bell-icon */
-.nav-contact-icon {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 5px var(--neon-cyan));
-  transition: transform 0.2s ease;
-}
-
-.nav-contact-btn:hover .nav-contact-icon {
-  transform: scale(1.1);
-}
-
-/* Replaces text emojis in the domain circle */
-.domain-img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  /* Optional: Adds a slight glowing tint to blend the colorful icons with the theme */
-  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6)); 
-}
-
-/* Replaces text emojis in Event Details */
-.detail-img-icon {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.5));
-}
-
-/* Aligns the icon perfectly next to the DATE/TIME/VENUE text */
-.detail-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--neon-cyan);
-  font-family: var(--font-display);
-}
-
-/* Small Mobile Devices */
 @media (max-width: 480px) {
   .cyber-navbar {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.75rem;
   }
   .logo {
-    height: 35px; /* Scale logo down slightly */
+    height: 32px;
   }
   .nav-contact-btn {
-    padding: 0.4rem 0.6rem;
+    padding: 0.35rem 0.5rem;
   }
   .contact-text {
-    display: none; /* Hides the word "CONTACT" and only shows the 🔔 icon on tiny screens */
+    display: none;
   }
   .title-glow {
     font-size: 2.5rem;
   }
   .detail-row {
     font-size: 0.95rem;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
   }
 }
