@@ -393,6 +393,47 @@ body::before {
   }
 }
 
+/* --- NEW IMAGE ICON STYLES --- */
+
+/* Replaces .bell-icon */
+.nav-contact-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px var(--neon-cyan));
+  transition: transform 0.2s ease;
+}
+
+.nav-contact-btn:hover .nav-contact-icon {
+  transform: scale(1.1);
+}
+
+/* Replaces text emojis in the domain circle */
+.domain-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  /* Optional: Adds a slight glowing tint to blend the colorful icons with the theme */
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.6)); 
+}
+
+/* Replaces text emojis in Event Details */
+.detail-img-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.5));
+}
+
+/* Aligns the icon perfectly next to the DATE/TIME/VENUE text */
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--neon-cyan);
+  font-family: var(--font-display);
+}
+
 /* Small Mobile Devices */
 @media (max-width: 480px) {
   .cyber-navbar {

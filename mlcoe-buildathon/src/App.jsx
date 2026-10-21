@@ -8,7 +8,6 @@ export default function App() {
       
       {/* Top Navbar */}
       <nav className="cyber-navbar">
-        {/* Logo on the left */}
         <div className="nav-left">
           <div className="logo-image">
             <img
@@ -19,13 +18,11 @@ export default function App() {
           </div>
         </div>
 
-        {/* Center Title */}
         <span className="nav-title">MLCOE BUILDATHON 2026</span>
 
-        {/* Contact on the right */}
         <div className="nav-right">
           <a href="#contact-footer" className="nav-contact-btn">
-            <span className="bell-icon">🔔</span>
+            <img src="/contact-us.png" alt="Contact" className="nav-contact-icon" />
             <span className="contact-text">CONTACT</span>
           </a>
         </div>
@@ -48,7 +45,9 @@ export default function App() {
             <h5>DOMAINS</h5>
             
             <div className="domain-card">
-              <div className="domain-icon">🎯</div>
+              <div className="domain-icon">
+                <img src="/budget-planning.png" alt="Estimation" className="domain-img" />
+              </div>
               <div className="domain-text">
                 <h6>ESTIMATION & PLANNING</h6>
                 <p>Estimation & Planning</p>
@@ -56,7 +55,9 @@ export default function App() {
             </div>
             
             <div className="domain-card">
-              <div className="domain-icon">📐</div>
+              <div className="domain-icon">
+                <img src="/design.png" alt="Design" className="domain-img" />
+              </div>
               <div className="domain-text">
                 <h6>DESIGN & ARCHITECTURE</h6>
                 <p>Design & Architecture</p>
@@ -64,7 +65,9 @@ export default function App() {
             </div>
             
             <div className="domain-card">
-              <div className="domain-icon">📄</div>
+              <div className="domain-icon">
+                <img src="/auctions.png" alt="Strategic Bidding" className="domain-img" />
+              </div>
               <div className="domain-text">
                 <h6>STRATEGIC BIDDING</h6>
                 <p>Strategic Bidding</p>
@@ -74,13 +77,25 @@ export default function App() {
 
           <div className="event-details">
             <div className="detail-row">
-              <span>📅 DATE:</span> 27TH OCTOBER 2026
+              <span className="detail-label">
+                <img src="/calendar.png" alt="Date" className="detail-img-icon" /> 
+                DATE:
+              </span> 
+              27TH OCTOBER 2026
             </div>
             <div className="detail-row">
-              <span>🕒 TIME:</span> 11:00 AM ONWARDS
+              <span className="detail-label">
+                <img src="/clock.png" alt="Time" className="detail-img-icon" /> 
+                TIME:
+              </span> 
+              11:00 AM ONWARDS
             </div>
             <div className="detail-row">
-              <span>📍 VENUE:</span> MAIN AUDITORIUM FIRST FLOOR
+              <span className="detail-label">
+                <img src="/location.png" alt="Venue" className="detail-img-icon" /> 
+                VENUE:
+              </span> 
+              MAIN AUDITORIUM FIRST FLOOR
             </div>
           </div>
         </div>
