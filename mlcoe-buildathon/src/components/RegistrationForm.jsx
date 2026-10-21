@@ -122,7 +122,7 @@ export default function RegistrationForm() {
               type="text"
               name="name"
               className={`form-input ${touched.name && fieldErrors.name ? 'error' : ''}`}
-              placeholder="Suryansh Singh"
+              placeholder="Student Name"
               value={formData.name}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -137,7 +137,7 @@ export default function RegistrationForm() {
               type="text"
               name="studentNo"
               className={`form-input ${touched.studentNo && fieldErrors.studentNo ? 'error' : ''}`}
-              placeholder="25164040"
+              placeholder="25174040"
               value={formData.studentNo}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -167,7 +167,7 @@ export default function RegistrationForm() {
               type="email"
               name="email"
               className={`form-input ${touched.email && fieldErrors.email ? 'error' : ''}`}
-              placeholder="akash25164040@akgec.ac.in"
+              placeholder="student25174040@akgec.ac.in"
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
