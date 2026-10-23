@@ -3,6 +3,7 @@ import {
   BRANCH_OPTIONS,
   GENDER_OPTIONS,
   RESIDENCE_OPTIONS,
+  YEAR_OPTIONS,
   validateField,
   validateRegistrationForm,
 } from '../utils/validation';
@@ -15,19 +16,21 @@ const INITIAL_FORM_STATE = {
   phoneNo: '',
   gender: 'Male',
   branch: 'CSE',
+  year: '1st Year',
+  universityRollNo: '',
   residence: 'DayScholar',
-  unstopId: '',
 };
 
 export default function RegistrationForm() {
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [fieldErrors, setFieldErrors] = useState({});
   const [touched, setTouched] = useState({});
-  
-  // Frontend-only state for UI compliance
   const [isDeclared, setIsDeclared] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiResponse, setApiResponse] = useState({ type: null, msg: null });
+  
+  // API Response States
+  const [serverErrors, setServerErrors] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,6 +38,13 @@ export default function RegistrationForm() {
 
     setFormData((prev) => {
       const updated = { ...prev, [name]: sanitizedVal };
+      
+      // Clear universityRollNo if switched back to 1st Year
+      if (name === 'year' && value === '1st Year') {
+        updated.universityRollNo = '';
+        setFieldErrors(prevErr => ({ ...prevErr, universityRollNo: '' }));
+      }
+
       if (touched[name]) {
         setFieldErrors(prevErr => ({ ...prevErr, [name]: validateField(name, sanitizedVal, updated) }));
       }
@@ -52,6 +62,9 @@ export default function RegistrationForm() {
     e.preventDefault();
     if (!isDeclared) return;
 
+    setServerErrors([]);
+    setSuccessMessage("");
+
     const validationErrors = validateRegistrationForm(formData);
     setFieldErrors(validationErrors);
 
@@ -61,18 +74,23 @@ export default function RegistrationForm() {
     if (Object.keys(validationErrors).length > 0) return;
 
     setIsSubmitting(true);
-    setApiResponse({ type: null, msg: null });
 
+    // Prepare payload exactly as backend expects
     const payload = {
       name: formData.name.trim(),
-      studentNo: formData.studentNo.trim(),
+      studentNo: formData.studentNo.trim().toUpperCase(),
       email: formData.email.trim().toLowerCase(),
       gender: formData.gender,
       branch: formData.branch,
+      year: formData.year,
       phoneNo: formData.phoneNo.trim(),
       residence: formData.residence,
-      unstopId: formData.unstopId.trim(),
     };
+
+    // Only attach roll number if 2nd Year
+    if (formData.year === '2nd Year') {
+      payload.universityRollNo = formData.universityRollNo.trim();
+    }
 
     try {
       const response = await fetch('/api/students/register', {
@@ -80,18 +98,25 @@ export default function RegistrationForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      
       const data = await response.json().catch(() => ({}));
 
-      if (response.status === 201) {
-        setApiResponse({ type: 'success', msg: 'Registration Successful! Identity verified.' });
+      if (response.ok || response.status === 201) {
+        setSuccessMessage(data.message || 'Registration Successful! Identity verified.');
         setFormData(INITIAL_FORM_STATE);
         setTouched({});
         setIsDeclared(false);
+      } else if (response.status === 400 && data.errors) {
+        setServerErrors(data.errors);
+      } else if (response.status === 429) {
+        setServerErrors([data.error || 'Rate limit exceeded. Please wait 5 minutes before trying again.']);
+      } else if (response.status === 409) {
+        setServerErrors([data.message || 'A student with this information is already registered.']);
       } else {
-        setApiResponse({ type: 'error', msg: data.message || `Error Code: ${response.status}. Proxy denied.` });
+        setServerErrors([data.message || `Error Code: ${response.status}. Proxy denied.`]);
       }
     } catch (err) {
-      setApiResponse({ type: 'error', msg: 'Uplink Failed. Check network connection.' });
+      setServerErrors(['Uplink Failed. Please check your network connection.']);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,25 +129,37 @@ export default function RegistrationForm() {
           <h2>BID TO BUILD<br/>REGISTRATION</h2>
           <p>Register your team to strategize, bid, and construct.</p>
         </div>
+        <div className="form-icon">👥</div>
       </div>
 
-      {apiResponse.msg && (
-        <div className={`api-banner ${apiResponse.type}`}>
-          {apiResponse.msg}
+      {/* Success Notification */}
+      {successMessage && (
+        <div className="api-banner success">
+          {successMessage}
+        </div>
+      )}
+
+      {/* Error Array Notification */}
+      {serverErrors.length > 0 && (
+        <div className="api-banner error" style={{ textAlign: 'left' }}>
+          <ul style={{ paddingLeft: '1.25rem', margin: 0 }}>
+            {serverErrors.map((err, idx) => (
+              <li key={idx} style={{ marginBottom: '0.25rem' }}>{err}</li>
+            ))}
+          </ul>
         </div>
       )}
 
       <form onSubmit={handleSubmit} noValidate>
         <div className="form-grid">
           
-          {/* Full Name */}
           <div className="form-group">
             <label className="form-label">Full Name</label>
             <input
               type="text"
               name="name"
               className={`form-input ${touched.name && fieldErrors.name ? 'error' : ''}`}
-              placeholder="Student Name"
+              placeholder="Johnathan Doe"
               value={formData.name}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -130,52 +167,36 @@ export default function RegistrationForm() {
             {touched.name && fieldErrors.name && <span className="error-text">{fieldErrors.name}</span>}
           </div>
 
-          {/* Student Number */}
           <div className="form-group">
             <label className="form-label">Student Number</label>
             <input
               type="text"
               name="studentNo"
               className={`form-input ${touched.studentNo && fieldErrors.studentNo ? 'error' : ''}`}
-              placeholder="25174040"
+              placeholder="e.g. 25164060 or 2612001"
               value={formData.studentNo}
               onChange={handleChange}
               onBlur={handleBlur}
+              style={{ textTransform: 'uppercase' }}
             />
             {touched.studentNo && fieldErrors.studentNo && <span className="error-text">{fieldErrors.studentNo}</span>}
           </div>
 
-          {/* Unstop ID (Replaced 'Roll Number' to maintain backend exact fields) */}
-          <div className="form-group">
-            <label className="form-label">Unstop ID</label>
-            <input
-              type="text"
-              name="unstopId"
-              className={`form-input ${touched.unstopId && fieldErrors.unstopId ? 'error' : ''}`}
-              placeholder="username_unstop"
-              value={formData.unstopId}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {touched.unstopId && fieldErrors.unstopId && <span className="error-text">{fieldErrors.unstopId}</span>}
-          </div>
-
-          {/* College Email */}
           <div className="form-group">
             <label className="form-label">College Email</label>
             <input
               type="email"
               name="email"
               className={`form-input ${touched.email && fieldErrors.email ? 'error' : ''}`}
-              placeholder="student25174040@akgec.ac.in"
+              placeholder="john25164060@akgec.ac.in"
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
+              style={{ textTransform: 'lowercase' }}
             />
             {touched.email && fieldErrors.email && <span className="error-text">{fieldErrors.email}</span>}
           </div>
 
-          {/* Phone Number */}
           <div className="form-group">
             <label className="form-label">Phone Number</label>
             <input
@@ -191,7 +212,51 @@ export default function RegistrationForm() {
             {touched.phoneNo && fieldErrors.phoneNo && <span className="error-text">{fieldErrors.phoneNo}</span>}
           </div>
 
-          {/* Segmented Gender Control */}
+          <div className="form-group">
+            <label className="form-label">Year of Study</label>
+            <div className="segmented-control">
+              {YEAR_OPTIONS.map((option) => (
+                <label key={option} className="segment-label">
+                  <input
+                    type="radio"
+                    name="year"
+                    value={option}
+                    checked={formData.year === option}
+                    onChange={handleChange}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+            {touched.year && fieldErrors.year && <span className="error-text">{fieldErrors.year}</span>}
+          </div>
+
+          {formData.year === '2nd Year' && (
+            <div className="form-group" style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+              <label className="form-label">University Roll No</label>
+              <input
+                type="text"
+                name="universityRollNo"
+                className={`form-input ${touched.universityRollNo && fieldErrors.universityRollNo ? 'error' : ''}`}
+                placeholder="10 to 15 digits"
+                value={formData.universityRollNo}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {touched.universityRollNo && fieldErrors.universityRollNo ? (
+                <span className="error-text">{fieldErrors.universityRollNo}</span>
+              ) : (
+                <span className="error-text" style={{ color: 'var(--neon-cyan)' }}>Mandatory for 2nd Year</span>
+              )}
+            </div>
+          )}
+
+          {formData.year === '1st Year' && (
+             <div className="form-group">
+                {/* Empty spacer block to maintain grid alignment when Roll No is hidden */}
+             </div>
+          )}
+
           <div className="form-group">
             <label className="form-label">Gender</label>
             <div className="segmented-control">
@@ -211,7 +276,6 @@ export default function RegistrationForm() {
             {touched.gender && fieldErrors.gender && <span className="error-text">{fieldErrors.gender}</span>}
           </div>
 
-          {/* Branch Dropdown */}
           <div className="form-group">
             <label className="form-label">Branch</label>
             <select
@@ -226,8 +290,7 @@ export default function RegistrationForm() {
             {touched.branch && fieldErrors.branch && <span className="error-text">{fieldErrors.branch}</span>}
           </div>
 
-          {/* Segmented Residence Control */}
-          <div className="form-group">
+          <div className="form-group full-width">
             <label className="form-label">Residence</label>
             <div className="segmented-control">
               {RESIDENCE_OPTIONS.map((option) => (
@@ -246,7 +309,6 @@ export default function RegistrationForm() {
             {touched.residence && fieldErrors.residence && <span className="error-text">{fieldErrors.residence}</span>}
           </div>
 
-          {/* Declaration Checkbox */}
           <div className="form-group full-width">
             <label className="declaration-group">
               <input
@@ -261,7 +323,6 @@ export default function RegistrationForm() {
             </label>
           </div>
 
-          {/* Submit Button */}
           <div className="form-group full-width">
             <button 
               type="submit" 
@@ -271,10 +332,9 @@ export default function RegistrationForm() {
               {isSubmitting ? 'PROCESSING...' : 'REGISTER NOW →'}
             </button>
             <div className="sys-footer">
-                <p>© 2026 MLCOE. All Rights Reserved.</p>
+              <p>© 2026 MLCOE Buildathon.</p>
             </div>
           </div>
-
         </div>
       </form>
     </div>
